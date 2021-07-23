@@ -1,9 +1,9 @@
 version: "3.7"
 services:  
     # postgres used by airflow
-    postgres:
-        container_name: postgres-movies
+    db:
         image: postgres:12.3-alpine
+        container_name: films-db-dev
         networks:
             - default_net
         volumes: 
@@ -12,6 +12,19 @@ services:
         env_file: postgres.env 
         ports:
             - "5455:5432"
+
+    jupyter-spark:
+        image: jupyter/pyspark-notebook:spark-3.1.2
+        container_name: films-jupyter-pyspark
+        networks:
+            - default_net
+        ports:
+          - "8888:8888"
+          - "4040-4080:4040-4080"
+        volumes:
+          - ./notebooks:/home/jovyan/work/notebooks/
+          - ./spark/resources/data:/home/jovyan/work/data/
+            # - ./spark/resources/jars:/home/jovyan/work/jars/
     spark:
         image: bitnami/spark:3.1.2
         # https://docs.bitnami.com/tutorials/work-with-non-root-containers/
@@ -68,17 +81,6 @@ services:
             - ./spark/app:/usr/local/spark/app # Spark scripts folder (Must be the same path in airflow and Spark Cluster)
             - ./spark/resources:/usr/local/spark/resources #Resources folder (Must be the same path in airflow and Spark Cluster)
 
-    jupyter-spark:
-        image: jupyter/pyspark-notebook:spark-3.1.2
-        networks:
-            - default_net
-        ports:
-          - "8888:8888"
-          - "4040-4080:4040-4080"
-        volumes:
-          - ./notebooks:/home/jovyan/work/notebooks/
-          - ./spark/resources/data:/home/jovyan/work/data/
-            # - ./spark/resources/jars:/home/jovyan/work/jars/
 
 volumes:
   postgres_data:

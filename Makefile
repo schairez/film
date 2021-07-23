@@ -1,22 +1,34 @@
 help:
-	@echo "build - The Docker image omahoco/spark-postgres"
-	@echo "postgres - Run a Postres container (exposes port 5432)"
+	@echo "build      - builds the Docker images from compose file"
+	@echo "db-shell   - Run a psql container" 
 
 
-build:
-	docker-compose -f docker-compose.yml build 
+build-and-run:
+	docker-compose -f docker-compose.yml up -d 
 
 up: 
 	docker-compose -f docker-compose.yml up -d 
 
+down:
+	docker-compose -f docker-compose.yml down
+
+stop:
+	docker-compose -f docker-compose.yml stop 
+
+jupyter:
+	docker-compose -f docker-compose.yml run -it \
+		-v /tmp:/data \
+		--name jupyter_pyspark \
+		--restart always \
+		-d jupyter/pyspark-notebook
+
 
 jupyter_token:
-	@docker logs jupyter-pyspark 2>&1 | grep '\?token\=' -m 1 | cut -d '=' -f2
+	@docker logs films-jupyter-pyspark 2>&1 | grep '\?token\=' -m 1 | cut -d '=' -f2
 
 
 db-shell:
-	docker-compose -f docker-compose.yml exec -it postgres bash \
-		psql -U postgres 
+	docker exec -it -u postgres films-db-dev psql
 
 
 # read more here 
