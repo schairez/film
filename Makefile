@@ -1,9 +1,10 @@
 help:
-	@echo "build      - builds the Docker images from compose file"
-	@echo "db-shell   - Run a psql container" 
+	@echo "up         - builds and/or runs the Docker images from compose file"
+	@echo "db-shell   - Run the psql container shell" 
+	@echo "jupyter    - Run the jupyter pynb instance " 
 
 
-build-and-run:
+build-or-run:
 	docker-compose -f docker-compose.yml up -d 
 
 up: 
@@ -15,12 +16,11 @@ down:
 stop:
 	docker-compose -f docker-compose.yml stop 
 
+spark-submit:
+	docker exec film_spark_1 spark-submit --master spark://spark:7077 usr/local/spark/app/start_spark.py 
+
 jupyter:
-	docker-compose -f docker-compose.yml run -it \
-		-v /tmp:/data \
-		--name jupyter_pyspark \
-		--restart always \
-		-d jupyter/pyspark-notebook
+	docker-compose start jupyter-spark 
 
 
 jupyter_token:
@@ -30,7 +30,9 @@ jupyter_token:
 db-shell:
 	docker exec -it -u postgres films-db-dev psql
 
+# docker container stop $(docker container ls -aq)
 
 # read more here 
 # https://medium.com/freestoneinfotech/simplifying-docker-compose-operations-using-makefile-26d451456d63
 
+# could be issue with swap file? 
