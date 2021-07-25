@@ -21,8 +21,11 @@ test-avg-rating-py-file:
 test-py-file:
 	docker-compose exec work-env python ./sql.py
 
+spark-shell:
+	docker-compose exec work-env spark-shell 
+
 spark-submit:
-	docker exec film_spark_1 spark-submit --master spark://spark:7077 usr/local/spark/app/start_spark.py 
+	docker exec film_spark_1 spark-submit --master spark://spark:7077 spark/app/start_spark.py 
 
 jupyter:
 	docker-compose start jupyter-spark 

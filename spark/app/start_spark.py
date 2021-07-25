@@ -41,9 +41,9 @@ if __name__ == "__main__":
             .select("movieId", "rating")
             .groupBy("movieId")
             .agg(F.avg("rating").alias("avg_rating"))
-            .orderBy("avg_rating", ascending=False))
+            .orderBy("movieId", ascending=False))
 
-    count_rating_df.show(n=10, truncate=False)
+    count_rating_df.show(n=40, truncate=False)
 
     spark_sess.stop()
     quit()
