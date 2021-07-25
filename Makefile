@@ -16,6 +16,11 @@ down:
 stop:
 	docker-compose -f docker-compose.yml stop 
 
+test-avg-rating-py-file: 
+	docker-compose exec work-env python spark/app/start_spark.py
+test-py-file:
+	docker-compose exec work-env python ./sql.py
+
 spark-submit:
 	docker exec film_spark_1 spark-submit --master spark://spark:7077 usr/local/spark/app/start_spark.py 
 
